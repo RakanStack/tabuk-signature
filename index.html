@@ -81,11 +81,11 @@
 
     <div class="field">
       <label for="name">الاسم</label>
-      <input id="name" type="text" value="عبدالله بن عبدالعزيز" autocomplete="name">
+      <input id="name" type="text" value="" placeholder="مثال: عبدالله بن عبدالعزيز" autocomplete="name">
     </div>
     <div class="field">
       <label for="title">المسمى الوظيفي</label>
-      <input id="title" type="text" value="مدير إدارة التواصل الداخلي">
+      <input id="title" type="text" value="" placeholder="مثال: مدير إدارة التواصل الداخلي">
     </div>
     <div class="field">
       <label for="dept">الإدارة / القسم</label>
@@ -93,11 +93,11 @@
     </div>
     <div class="field">
       <label for="email">البريد الإلكتروني</label>
-      <input id="email" type="email" dir="ltr" value="abdullah.abdulaziz@tabuk.gov.sa" autocomplete="email">
+      <input id="email" type="email" dir="ltr" value="" placeholder="name@tabuk.gov.sa" autocomplete="email">
     </div>
     <div class="field">
       <label for="phone">رقم الجوال</label>
-      <input id="phone" type="tel" dir="ltr" value="0541234560" autocomplete="tel">
+      <input id="phone" type="tel" dir="ltr" value="" placeholder="05XXXXXXXX" autocomplete="tel">
     </div>
 
     <div class="btn-row">
@@ -127,13 +127,6 @@
       <div id="sigHost"></div>
     </div>
   </section>
-</div>
-
-<div class="footer-note">
-  <div class="inner">
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#146B4A" stroke-width="2" style="flex:none"><circle cx="12" cy="12" r="10"/><path d="M12 8h.01M12 12v4"/></svg>
-    <span>مهم: التوقيع المنسوخ يعتمد على صور مرفوعة على الرابط المحدد في ASSETS_BASE داخل الكود. ارفع محتويات ملف tabuk-sign-assets.zip على GitHub Pages بنفس المسار قبل تعميم التوقيع، وإلا لن تظهر الصور للمستلمين.</span>
-  </div>
 </div>
 
 <footer class="credit">
@@ -268,11 +261,17 @@ function render(){ $("sigHost").innerHTML = buildSignature(currentData(), false)
 ["name","title","dept","email","phone"].forEach(id=> $(id).addEventListener("input", render));
 
 $("resetBtn").addEventListener("click", ()=>{
-  Object.entries(defaults).forEach(([k,v])=> $(k).value = v);
+  ["name","title","dept","email","phone"].forEach(id=> $(id).value = "");
   render();
 });
 
 $("copyBtn").addEventListener("click", async ()=>{
+  const missing = ["name","title","email","phone"].filter(id => !$(id).value.trim());
+  if (missing.length){
+    alert("فضلاً عبّئ بياناتك أولاً (الاسم، المسمى الوظيفي، البريد، الجوال) قبل نسخ التوقيع.");
+    $(missing[0]).focus();
+    return;
+  }
   const html = buildSignature(currentData(), true); // روابط مستضافة = حجم صغير متوافق مع Gmail
   const d = currentData();
   const plain = `أ. ${d.name}\n${d.title}\n${d.dept}\n${d.email}\n${d.phone}`;
